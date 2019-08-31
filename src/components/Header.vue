@@ -65,8 +65,7 @@ export default {
         // 先提示用户是否注销账号，用户确定后再执行注销账号操作
         this.$Modal.confirm({
           title: "确定注销账号？",
-          content:
-            "<p>执行该操作后，您将不能通过此账号登录本系统，相关数据将被清空！！！</p>",
+          content: "<p>执行该操作后，您将不能通过此账号登录本系统，相关数据将被清空！！！</p>",
           onOk: () => {
             this.$axios
               .delete("/api/admin", {
@@ -91,8 +90,7 @@ export default {
           this.adminName = res.data.data.name;
         });
     },
-    // 下载app版
-    download() {
+    download() { // redirect
       window.location.href = "http://47.111.134.50:8200/api/download/gateway";
     }
   }

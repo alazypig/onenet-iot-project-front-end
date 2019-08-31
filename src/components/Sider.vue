@@ -43,6 +43,7 @@
 // 实现页面刷新时，侧边栏仍然停留在之前高亮显示的页面
 import getActiveNav from "../siderConfig/leftNav.config.js";
 import getOpenKeys from "../siderConfig/openKeys.config.js";
+
 export default {
   data() {
     return {
@@ -52,8 +53,7 @@ export default {
     };
   },
   beforeMount() {
-    let keys = getOpenKeys(window.location.href);
-    this.openKeys = keys.toString().split("");
+    this.openKeys = getOpenKeys(window.location.href).toString().split("");
     this.activeNav = getActiveNav(window.location.href);
   },
   methods: {
@@ -68,6 +68,7 @@ export default {
 
       // 设备信息页面跳转
       if (name === "3") this.$router.push("/home/machineInfo");
+      
       // 系统提示页面路由跳转
       if (name === "4") this.$router.push("/home/tips");
     }

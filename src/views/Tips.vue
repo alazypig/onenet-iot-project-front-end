@@ -127,7 +127,7 @@ export default {
                   "rotate(" + this.rotateVal + "deg)";
                 this.$refs.img.style.transition = "0.1s linear";
               }, 1);
-            } else if (res.data.code >= 300) {
+            } else {
               this.$Message.error("打开散热扇指令下发失败！");
               this.fanBtn = false;
               clearInterval(this.fanTimer);
@@ -146,7 +146,7 @@ export default {
             if (res.data.code < 300) {
               this.$Message.success("关闭扇热扇指令下发成功！");
               clearInterval(this.fanTimer);
-            } else if (res.data.code >= 300) {
+            } else {
               this.$Message.error("关闭扇热扇指令下发失败！");
             }
           })

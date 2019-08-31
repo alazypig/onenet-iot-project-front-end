@@ -201,8 +201,7 @@ export default {
               this.$Message.error("默认时间段内没有相关数据！");
             }
             for (let i = 0; i < res.data.data.length; i++) {
-              let date = new Date(res.data.data[i].createTime);
-              this.time.push(this.$options.methods.formatTime(date));
+              this.time.push(this.$options.methods.formatTime(new Date(res.data.data[i].createTime)));
               this.temp.push(res.data.data[i].temperature);
               this.humi.push(res.data.data[i].humidity);
               this.volt.push(res.data.data[i].voltage);
@@ -297,8 +296,7 @@ export default {
               this.$Message.error("该时间段内没有相关数据！请重新选择时间段！");
             }
             for (let i = 0; i < res.data.data.length; i++) {
-              let date = new Date(res.data.data[i].createTime);
-              this.time.push(this.$options.methods.formatTime(date));
+              this.time.push(this.$options.methods.formatTime(new Date(res.data.data[i].createTime)));
               this.temp.push(res.data.data[i].temperature);
               this.humi.push(res.data.data[i].humidity);
               this.volt.push(res.data.data[i].voltage);

@@ -182,13 +182,15 @@ export default {
           }
         ]
       });
-      brokenLine.showLoading({ // loading animation
+      brokenLine.showLoading({
+        // loading animation
         text: "加载中",
         color: "#4cbbff",
         textColor: "#4cbbff",
         maskColor: "rgba(255, 255, 255, 0.8)"
       });
-      brokenLine.setOption({ // show history data
+      brokenLine.setOption({
+        // show history data
         title: {
           text: "电机转速记录(单位r/min)"
         },
@@ -308,7 +310,7 @@ export default {
             console.log(error);
           });
       }
-      if (this.changeForm.speed === "slow" && this.elecCtrl.switch === true) {
+      if (this.changeForm.speed === "slow" && this.elecCtrl.switch) {
         this.$axios
           .get("/api/cmd/motor-slow", {
             headers: { token: localStorage.getItem("token") }
@@ -324,10 +326,7 @@ export default {
             this.$Message.error("接口或处理逻辑出错！");
             console.log(error);
           });
-      } else if (
-        this.changeForm.speed === "middle" &&
-        this.elecCtrl.switch === true
-      ) {
+      } else if (this.changeForm.speed === "middle" && this.elecCtrl.switch) {
         this.$axios
           .get("/api/cmd/motor-middle", {
             headers: { token: localStorage.getItem("token") }
@@ -343,10 +342,7 @@ export default {
             this.$Message.error("接口或处理逻辑出错！");
             console.log(error);
           });
-      } else if (
-        this.changeForm.speed === "fast" &&
-        this.elecCtrl.switch === true
-      ) {
+      } else if (this.changeForm.speed === "fast" && this.elecCtrl.switch) {
         this.$axios
           .get("/api/cmd/motor-fast", {
             headers: { token: localStorage.getItem("token") }
@@ -364,7 +360,8 @@ export default {
           });
       }
     },
-    defaultHistory() { // show history data
+    defaultHistory() {
+      // show history data
       let defaultEnd = Number(new Date());
       let defaultStart = defaultEnd - 24 * 60 * 60 * 1000;
       this.$axios
@@ -379,12 +376,15 @@ export default {
               this.$Message.error("默认时间段内没有相关数据！");
             }
             for (let i = 0; i < res.data.data.length; i++) {
-              let date = new Date(res.data.data[i].createTime);
-              this.time.push(this.$options.methods.formatTime(date));
+              this.time.push(
+                this.$options.methods.formatTime(
+                  new Date(res.data.data[i].createTime)
+                )
+              );
               this.speed.push(res.data.data[i].motorSpeed);
             }
             let brokenLine = this.$echarts.init(
-              document.getElementById("brokenLine")
+              document.querySelector("#brokenLine")
             );
             brokenLine.hideLoading();
             brokenLine.setOption({
@@ -408,16 +408,13 @@ export default {
         });
     },
     handleQuery() {
-      let value1 = this.value[0]; // start time
-      let value2 = this.value[1]; // end time
-      this.timeSelect.start = Number(value1);
-      this.timeSelect.end = Number(value2);
+      this.timeSelect.start = Number(this.value[0]);
+      this.timeSelect.end = Number(this.value[1]);
       this.time = [];
       this.speed = [];
-      let brokenLine = this.$echarts.init(
-        document.getElementById("brokenLine")
-      );
-      brokenLine.showLoading({ // loading animation
+      let brokenLine = this.$echarts.init(document.querySelector("brokenLine"));
+      brokenLine.showLoading({
+        // loading animation
         text: "加载中",
         color: "#4cbbff",
         textColor: "#4cbbff",
@@ -435,11 +432,12 @@ export default {
               this.$Message.error("默认时间段内没有相关数据！");
             }
             for (let i = 0; i < res.data.data.length; i++) {
-              let date = new Date(res.data.data[i].createTime);
-              this.time.push(this.$options.methods.formatTime(date));
-              this.speed.push(
-                res.data.data[i].motorSpeed
+              this.time.push(
+                this.$options.methods.formatTime(
+                  new Date(res.data.data[i].createTime)
+                )
               );
+              this.speed.push(res.data.data[i].motorSpeed);
             }
             brokenLine.hideLoading();
             brokenLine.setOption({
@@ -483,21 +481,27 @@ export default {
         () => {
           this.stompClient.subscribe("/topic/msg", msg => {
             let body = JSON.parse(msg.body);
-            if (body.motorOpen === "0") {
-              this.elecCtrl.switch = false;
-              this.realSpeed = 0;
-              this.elecCtrl.turn = "9";
-            } else if (body.motorOpen === "1") {
-              this.elecCtrl.switch = true;
-              this.elecCtrl.turn = "1";
-              this.realSpeed = body.motorSpeed;
-            } else if (body.motorOpen === "2") {
-              this.elecCtrl.switch = true;
-              this.elecCtrl.turn = "0";
-              this.realSpeed = body.motorSpeed;
+            switch (body.motorOpen) {
+              case "0":
+                this.elecCtrl.switch = false;
+                this.realSpeed = 0;
+                this.elecCtrl.turn = "9";
+                break;
+              case "1":
+                this.elecCtrl.switch = true;
+                this.elecCtrl.turn = "1";
+                this.realSpeed = body.motorSpeed;
+                break;
+              case "2":
+                this.elecCtrl.switch = true;
+                this.elecCtrl.turn = "0";
+                this.realSpeed = body.motorSpeed;
+                break;
+              default:
+                break;
             }
             let dashBoard = this.$echarts.init(
-              document.getElementById("dashBoard")
+              document.querySelector("#dashBoard")
             );
             dashBoard.setOption({
               series: [

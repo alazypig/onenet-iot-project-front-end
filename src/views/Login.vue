@@ -82,7 +82,8 @@ export default {
     // load data from cookie
     let name = this.getCookie("name");
     let password = Base64.decode(this.getCookie("password"));
-    if (name) { // if exisit
+    if (name) {
+      // if exisit
       this.loginUser.name = name;
       this.loginUser.password = password;
       this.config.remember = true;
@@ -95,7 +96,7 @@ export default {
           this.$axios
             .post("/api/account", this.loginUser)
             .then(res => {
-              if (res.data.code > 300) {
+              if (res.data.code >= 300) {
                 this.$Message.error(res.data.msg);
               } else {
                 localStorage.setItem("token", res.data.data.token);
@@ -117,7 +118,8 @@ export default {
       this.config.remember = false;
       this.loginUser = "";
     },
-    setUserInfo() { // save to cookie
+    setUserInfo() {
+      // save to cookie
       if (this.config.remember) {
         this.setCookie("name", this.loginUser.name);
         this.setCookie("password", Base64.encode(this.loginUser.password));
@@ -143,7 +145,11 @@ export default {
     setCookie(cName, value, days) {
       var exdate = new Date();
       exdate.setDate(exdate.getDate() + days);
-      document.cookie = cName + "=" + decodeURIComponent(value) + (days == null ? "" : ";expires=" + exdate.toGMTString());
+      document.cookie =
+        cName +
+        "=" +
+        decodeURIComponent(value) +
+        (days == null ? "" : ";expires=" + exdate.toGMTString());
     }
   }
 };
