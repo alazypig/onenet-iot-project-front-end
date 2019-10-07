@@ -112,6 +112,7 @@ export default {
   methods: {
     change(fanBtn) {
       this.$Message.info("指令下发中请耐心等待！");
+      
       if (fanBtn) {
         this.$axios
           .get("/api/cmd/fan-open", { // open fan
@@ -160,8 +161,8 @@ export default {
       this.connection();
     },
     connection() {
-      let socket = new SockJS("http://47.111.134.50:8200/ws");
-      this.stompClient = Stomp.over(socket);
+      this.stompClient = Stomp.over(new SockJS("http://47.111.134.50:8200/ws"));
+      
       this.stompClient.connect(
         "guest",
         "guest",
